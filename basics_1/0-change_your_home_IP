@@ -1,7 +1,3 @@
 #!/usr/bin/env bash
-h=/etc/hosts
-t=$(mktemp)
-awk '!($2=="localhost" || $2=="facebook.com")' "$h" > "$t"
-printf '127.0.0.2 localhost\n8.8.8.8 facebook.com\n' >> "$t"
-cat "$t" > "$h"
-rm -f "$t"
+echo "127.0.0.2 localhost" > /etc/hosts
+echo "8.8.8.8 facebook.com" >> /etc/hosts
