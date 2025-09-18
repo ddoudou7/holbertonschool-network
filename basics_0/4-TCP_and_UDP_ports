@@ -1,4 +1,11 @@
 #!/usr/bin/env bash
-# Display listening TCP and UDP ports with the PID and program name
+# Display listening TCP/UDP ports with PID/Program name (netstat or ss)
 
-netstat -tulnp
+if command -v netstat >/dev/null 2>&1; then
+  netstat -tulnp
+elif command -v ss >/dev/null 2>&1; then
+  ss -tulnp
+else
+  echo "No suitable tool found (need netstat or ss)" >&2
+  exit 1
+fi
