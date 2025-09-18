@@ -1,13 +1,3 @@
 #!/usr/bin/env bash
-tmp="$(mktemp)"
-awk '
-  $0 ~ /(^|[[:space:]])localhost([[:space:]]|$)/ { next }
-  $0 ~ /(^|[[:space:]])facebook\.com([[:space:]]|$)/ { next }
-  { print }
-' /etc/hosts > "$tmp"
-{
-  echo "127.0.0.2 localhost"
-  echo "8.8.8.8 facebook.com"
-} >> "$tmp"
-cat "$tmp" > /etc/hosts
-rm -f "$tmp"
+echo "127.0.0.2 localhost" | tee -a /etc/hosts > /dev/null
+echo "8.8.8.8 facebook.com" | tee -a /etc/hosts > /dev/null
