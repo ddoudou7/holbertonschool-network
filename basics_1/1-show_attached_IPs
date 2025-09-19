@@ -1,4 +1,11 @@
 #!/usr/bin/env bash
-# Display all active IPv4 addresses on the machine (one per line)
+# Display all active IPv4 addresses (including loopback), one per line
 
-hostname -I | tr ' ' '\n' | grep -E '^[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+$'
+# Primary: use `ip` (Ubuntu standard)
+if command -v ip >/dev/null 2>&1; then
+  ip -o -4 addr show up 2>/dev/null | awk '{print $4}' | cut -d/ -f1
+  exit 0
+fi
+
+# Fallback (rarely used on checker): hostname -I filtered to IPv4
+hostname -I 2>/dev/null | tr ' ' '\n' | grep -E '^[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+$'
