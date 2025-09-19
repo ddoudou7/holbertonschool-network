@@ -1,2 +1,2 @@
 #!/usr/bin/env bash
-ip -o -4 addr show | awk -F '[ /]+' '{print $4}'
+ip -o -4 addr show up 2>/dev/null | awk '{print $4}' | cut -d/ -f1
