@@ -1,12 +1,20 @@
 #!/usr/bin/env bash
-# - localhost -> 127.0.0.2
+# Force:
+# - localhost  -> 127.0.0.2
 # - facebook.com -> 8.8.8.8
+# Idempotent & silencieux
 
-# Remplacer localhost (idempotent)
-sed -i -E 's/^[[:space:]]*127\.0\.0\.1[[:space:]]+localhost/127.0.0.2 localhost/' /etc/hosts
+set -e
 
-# Supprimer toute ligne existante pour facebook.com (idempotent)
-sed -i -E '/[[:space:]]facebook\.com([[:space:]]|$)/d' /etc/hosts
+tmp="$(mktemp)"
 
-# Ajouter le mapping demandé
-echo "8.8.8.8 facebook.com" | tee -a /etc/hosts >/dev/null
+{
+  echo "127.0.0.2 localhost"
+  echo "8.8.8.8 facebook.com"
+  # Conserver le reste, en retirant uniquement l'ancienne ligne localhost et facebook.com
+  awk '!/^[[:space:]]*127\.0\.0\.1[[:space:]]+localhost([[:space:]]|$)/ && !/[[:space:]]facebook\.com([[:space:]]|$)/' /etc/hosts
+} > "$tmp"
+
+# Remplacer /etc/hosts
+cp "$tmp" /etc/hosts
+rm -f "$tmp"
