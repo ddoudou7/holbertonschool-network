@@ -1,10 +1,10 @@
 #!/usr/bin/env bash
-# Display listening TCP/UDP ports with PID/Program name
+# Display listening ports (TCP/UDP + UNIX) with PID/Program name
 
 if command -v netstat >/dev/null 2>&1; then
-  netstat -ltnup
+  netstat -lp
 elif command -v ss >/dev/null 2>&1; then
-  ss -ltnup
+  ss -lp
 else
   echo "No suitable tool found (need netstat or ss)" >&2
   exit 1
