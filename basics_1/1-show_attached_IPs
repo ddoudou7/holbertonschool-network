@@ -1,9 +1,3 @@
 #!/usr/bin/env bash
-# Display all active IPv4 addresses (one per line, clean/sorted/unique)
-
-ip -o -4 addr show up 2>/dev/null \
-| awk '{print $4}' \
-| cut -d/ -f1 \
-| sed 's/[[:space:]]\+$//' \
-| sed '/^$/d' \
-| sort -u
+# Display all active IPv4 IPs on the machine
+ifconfig | grep "inet " | awk '{print $2}' 
