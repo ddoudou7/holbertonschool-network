@@ -1,0 +1,43 @@
+USER Browser
+   |  type https://www.google.com and press Enter
+   v
+DNS resolution
+   - Browser/OS/resolver -> root -> .com -> google.com authoritative
+   - Returns IP (VIP of Google LB)
+   |
+   v
+Firewall(s) in the path (host/ISP/provider): allow TCP 443
+   |
+   v
+Encrypted traffic (HTTPS/TLS over TCP/IP)
+   |
+   v
++---------------------------+
+|  Load Balancer (VIP:443)  |  <-- distributes request (e.g., round-robin/latency)
++-------------+-------------+
+              |
+              v
+        +-----+------+
+        |  Web srv   |  (Nginx/Apache)  <-- serves static, proxies dynamic
+        +-----+------+
+              |
+              v
+        +-----+------+
+        |  App srv   |  (e.g., Gunicorn/uWSGI/Node/Java)
+        +-----+------+
+              |
+              |  query/read/write
+              v
+        +-----+------+
+        |  Database  |  (reads/writes; replicas for scale)
+        +------------+
+
+Flow summary:
+- DNS resolution ✔
+- Request hits server IP on appropriate port (443) ✔
+- Traffic is encrypted (HTTPS/TLS) ✔
+- Traffic goes through a firewall ✔
+- Request distributed via a load balancer ✔
+- Web server serves web page (static/proxy) ✔
+- Application server generates page ✔
+- Application server requests data from DB ✔
